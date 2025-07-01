@@ -1,0 +1,40 @@
+name: Build and Deploy Gotham Nuget Packages
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-gotham-dotnet.yml'
+      - 'gotham-dotnet/**/*'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-gotham-dotnet.yml'
+      - 'gotham-dotnet/**/*'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      
+      - name: Test NuGet Packages
+        run: dotnet test ./gotham-dotnet/gotham-dotnet.sln -c Release
+
+      - name: Compile NuGet Packages
+        run: dotnet pack ./gotham-dotnet/gotham-dotnet.sln -c Release -o ./gotham-dotnet/pkg
+
+      - name: Publish NuGet Packages
+        run: dotnet nuget push ./gotham-dotnet/pkg/*.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/derrysmith/index.json"

@@ -1,0 +1,5 @@
+<Project>
+	<PropertyGroup>
+		<Gotham_IsHostProject Condition="$(OutputType.Equals('Exe'))">true</Gotham_IsHostProject>
+	</PropertyGroup>
+</Project>

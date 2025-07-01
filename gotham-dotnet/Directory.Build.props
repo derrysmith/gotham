@@ -1,0 +1,22 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<Gotham_IsTestProject>false</Gotham_IsTestProject>
+		<Gotham_IsTestProject Condition="$(MSBuildProjectName.EndsWith('.Tests'))">true</Gotham_IsTestProject>
+		<Gotham_IsHostProject>false</Gotham_IsHostProject>
+		<Version>1.0.1</Version>
+	</PropertyGroup>
+
+	<!-- global dependencies for all projects -->
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
+		<Using Include="CommunityToolkit.Diagnostics" />
+	</ItemGroup>
+	
+	<!-- package dependencies for test projects -->
+	<ItemGroup Condition="'$(Gotham_IsTestProject)' == 'true'">
+		<PackageReference Include="FakeItEasy" Version="8.3.0" />
+		<PackageReference Include="Shouldly" Version="4.3.0" />
+		<Using Include="FakeItEasy" />
+		<Using Include="Shouldly" />
+	</ItemGroup>
+</Project>

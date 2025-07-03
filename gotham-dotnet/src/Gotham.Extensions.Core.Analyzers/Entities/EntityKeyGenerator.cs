@@ -28,10 +28,13 @@ public class EntityKeyGenerator : IIncrementalGenerator
 // -------------------------------------------------------
 
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using {typeof(EntityKeyAttribute).Namespace};
 
 namespace {model.TypeNamespace}
 {{
+	[JsonConverter(typeof({model.TypeName}JsonConverter))]
 	public readonly partial record struct {model.TypeName}
 	{{
 		private const string Prefix = ""{model.Prefix}"";
@@ -96,6 +99,15 @@ namespace {model.TypeNamespace}
 		{{
 			return $""{{Prefix}}{{_value}}{{Suffix}}"";
 		}}
+	}}
+
+	public class {model.TypeName}JsonConverter : JsonConverter<{model.TypeName}>
+	{{
+		public override {model.TypeName} Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+			=> {model.TypeName}.Parse(reader.GetString());
+
+		public override void Write(Utf8JsonWriter writer, {model.TypeName} value, JsonSerializerOptions options)
+			=> writer.WriteStringValue(value.ToString());
 	}}
 }}";
 
